@@ -7,7 +7,7 @@ import {
 import type { Todo } from "../types/todo";
 
 const DEFAULT_DURATION_MIN = 25;
-export const DURATION_PRESETS = [15, 25, 45] as const;
+export const DURATION_PRESETS = [1, 15, 25, 45] as const;
 
 export type TimerStatus = "idle" | "running" | "paused";
 

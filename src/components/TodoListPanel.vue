@@ -1,14 +1,25 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import TodoItem from "./TodoItem.vue";
 import type { Todo } from "../types/todo";
 
-defineProps<{ todos: Todo[] }>();
+const props = defineProps<{ todos: Todo[] }>();
 const emit = defineEmits<{
   add: [title: string];
   toggle: [id: string];
   delete: [id: string];
 }>();
+
+const sortTodos = computed(() => {
+  return props.todos.toSorted((a, b) => {
+    if (a.completed && !b.completed) {
+      return 1;
+    } else if (b.completed && !a.completed) {
+      return -1;
+    }
+    return 1;
+  })
+});
 
 const newTitle = ref("");
 function submit() {
@@ -35,7 +46,7 @@ function submit() {
     </form>
     <ul class="todo-list" aria-label="Todo list">
       <TodoItem
-        v-for="todo in todos"
+        v-for="todo in sortTodos"
         :key="todo.id"
         :todo="todo"
         @toggle="(id) => emit('toggle', id)"
