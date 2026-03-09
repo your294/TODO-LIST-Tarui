@@ -4,6 +4,7 @@ import {
   requestPermission,
   sendNotification,
 } from "@tauri-apps/plugin-notification";
+import { platform } from "@tauri-apps/plugin-os"
 import type { Todo } from "../types/todo";
 
 const DEFAULT_DURATION_MIN = 25;
@@ -27,6 +28,28 @@ export function useFocusTimer(
   let targetAt: number | null = null;
   let sessionStartRemaining = 0;
 
+  // send notification with sound
+  async function sendNotificationWithSound(title: string, body: string) {
+    const currentPlatform = platform();
+    let soundPath: string | undefined;
+    if (currentPlatform === 'macos') {
+      soundPath = 'Ping'
+    } else if (currentPlatform === 'linux') {
+      // if use xdg theme
+      soundPath = 'message-new-instant'
+    } else {
+      // for windows
+      soundPath = 'notification.wav'
+    }
+    try {
+      sendNotification({
+        title, body, sound: soundPath
+      })
+    } catch (e) {
+      console.error('send notification with error: ', e);
+    }
+  }
+
   async function notifyTimerDone() {
     let granted = await isPermissionGranted();
     if (!granted) {
@@ -36,7 +59,8 @@ export function useFocusTimer(
     if (granted) {
       const task = getTodos().find((t) => t.id === selectedTodoId.value);
       const body = task ? `Completed: ${task.title}` : "Focus session done.";
-      sendNotification({ title: "Timer finished", body });
+      const title = "Timer finished";
+      sendNotificationWithSound(title, body);
     } else {
       console.error('---The user deny our notification permission---')
     }
