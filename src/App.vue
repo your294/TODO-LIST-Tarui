@@ -39,6 +39,13 @@ function setSelectedTodoId(v: string | null) {
 
 <template>
   <main class="app">
+    <!-- 磨砂背景 -->
+    <div class="g-bg">
+      <div class="g-polygon g-polygon1"></div>
+      <div class="g-polygon g-polygon2"></div>
+      <div class="g-polygon g-polygon3"></div>
+    </div>
+
     <header class="header">
       <h1 class="title">My Todos</h1>
       <TabNav v-model:active-tab="activeTab" />
@@ -83,6 +90,7 @@ function setSelectedTodoId(v: string | null) {
 
 <style scoped>
 .app {
+  position: relative;
   max-width: 520px;
   margin: 0 auto;
   padding: 1.5rem;
@@ -91,6 +99,62 @@ function setSelectedTodoId(v: string | null) {
 
   overflow-y: hidden;
 }
+
+.g-bg {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  pointer-events: none;
+  /* 让背景下去 */
+  z-index: -2;
+}
+
+.g-bg::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  /* background: rgba(255, 255, 255, 0.25); */
+  backdrop-filter: blur(12px);
+  z-index: -1;
+}
+
+.g-polygon {
+  position: fixed;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: -2;
+}
+
+.g-polygon1 {
+  width: 500px;
+  height: 200px;
+  left: 32%;
+  top: 28%;
+  background-color: #FF5A5F;
+  clip-path: polygon(0 10%, 30% 0, 100% 40%, 70% 100%, 20% 90%);
+}
+
+.g-polygon2 {
+  width: 600px;
+  height: 400px;
+  left: 5%;
+  top: 30%;
+  background-color: #FFD37E;
+  clip-path: polygon(10% 0, 100% 70%, 100% 100%, 20% 90%);
+}
+
+.g-polygon3 {
+  width: 400px;
+  height: 300px;
+  top: 15%;
+  right: 40%;
+  background-color: #BF9AFF;
+  clip-path: polygon(80% 0, 100% 70%, 100% 100%, 20% 90%);
+}
+
 
 .header {
   margin-bottom: 1.5rem;
