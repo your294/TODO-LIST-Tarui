@@ -4,11 +4,12 @@ import {
   requestPermission,
   sendNotification,
 } from "@tauri-apps/plugin-notification";
-import { platform } from "@tauri-apps/plugin-os"
+import { resolveResource } from "@tauri-apps/api/path";
+import { platform } from "@tauri-apps/plugin-os";
 import type { Todo } from "../types/todo";
 
 const DEFAULT_DURATION_MIN = 25;
-export const DURATION_PRESETS = [1, 15, 25, 45] as const;
+export const DURATION_PRESETS = [0.1, 1, 15, 25, 45] as const;
 
 export type TimerStatus = "idle" | "running" | "paused";
 
@@ -17,7 +18,7 @@ export function useFocusTimer(
   options?: {
     onFocusTime?: (focusSeconds: number) => void;
     onSessionComplete?: (focusSeconds: number, todoId: string | null) => void;
-  }
+  },
 ) {
   const remainingSec = ref(DEFAULT_DURATION_MIN * 60);
   const status = ref<TimerStatus>("idle");
@@ -32,21 +33,23 @@ export function useFocusTimer(
   async function sendNotificationWithSound(title: string, body: string) {
     const currentPlatform = platform();
     let soundPath: string | undefined;
-    if (currentPlatform === 'macos') {
-      soundPath = 'Ping'
-    } else if (currentPlatform === 'linux') {
+    if (currentPlatform === "macos") {
+      soundPath = "Ping";
+    } else if (currentPlatform === "linux") {
       // if use xdg theme
-      soundPath = 'message-new-instant'
+      soundPath = "message-new-instant";
     } else {
       // for windows
-      soundPath = 'notification.wav'
+      soundPath = await resolveResource("notification.wav");
     }
     try {
       sendNotification({
-        title, body, sound: soundPath
-      })
+        title,
+        body,
+        sound: soundPath,
+      });
     } catch (e) {
-      console.error('send notification with error: ', e);
+      console.error("send notification with error: ", e);
     }
   }
 
@@ -62,7 +65,7 @@ export function useFocusTimer(
       const title = "Timer finished";
       sendNotificationWithSound(title, body);
     } else {
-      console.error('---The user deny our notification permission---')
+      console.error("---The user deny our notification permission---");
     }
   }
 
