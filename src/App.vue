@@ -5,7 +5,8 @@ import { useFocusTimer } from "./composables/useFocusTimer";
 import TabNav from "./components/TabNav.vue";
 import TodoListPanel from "./components/TodoListPanel.vue";
 import TimerPanel from "./components/TimerPanel.vue";
-import HistoryPanel from "./components/HistoryPanel.vue";
+// import HistoryPanel from "./components/HistoryPanel.vue";
+import TodoCalendar from "./components/TodoCalendar.vue";
 import FooterTips from "./components/FooterTips.vue";
 
 const activeTab = ref<"list" | "timer" | "history">("list");
@@ -75,7 +76,7 @@ function setSelectedTodoId(v: string | null) {
       @set-duration="timer.setDuration"
     />
 
-    <HistoryPanel
+    <TodoCalendar
       v-show="activeTab === 'history'"
       :history="unref(todoStore.history)"
     />
@@ -182,6 +183,9 @@ function setSelectedTodoId(v: string | null) {
   --border: #d0d0d0;
   --accent: #396cd8;
   --accent-text: #fff;
+  --background-accent: #e0f2fe;
+  --primary: #1890ff;
+  --background-hover: #1890ff;
   font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
