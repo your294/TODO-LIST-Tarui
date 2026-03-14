@@ -40,12 +40,13 @@ function getDaysInMonth(year: number, month: number): Date[] {
   }
   // 补全下个月的空白（到周六）
   const remaining = 42 - days.length; // 6周 * 7天 = 42
+  const daysOfCurrentMonth = days.length;
   for (let d = 1; d <= remaining; d++) {
-    if (month === 11) {
-        days.push(new Date(year + 1, 0, d))
-    } else {
-        days.push(new Date(year, month + 1, d))
-    }
+    const cloneDate = new Date(lastDay);
+    // 需要超出本月天数
+    const newTimeStamp = cloneDate.setDate(daysOfCurrentMonth + d);
+    const newDate = new Date(newTimeStamp);
+    days.push(newDate);
   }
   console.log(days);
   return days;
@@ -71,7 +72,13 @@ function hasData(date: Date): boolean {
 }
 
 function selectDate(date: Date) {
-  if (!isCurrentMonth(date)) return; // 只允许选择当前月的日期（可选）
+  // 需要判断日期用于切换
+  if (!isCurrentMonth(date)) {
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    currentYear.value = year;
+    currentMonth.value = month;
+  }
   selectedDate.value = formatDateKey(date);
 }
 
